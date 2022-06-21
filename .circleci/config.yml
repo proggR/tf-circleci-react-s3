@@ -40,7 +40,7 @@ jobs:
 
       - aws-s3/sync:
           from: ~/repo/build/
-          to: "s3://skunk.services"
+          to: "s3://basic-ci.skunk.services"
           arguments: |
             --acl public-read \
           overwrite: true
@@ -52,4 +52,4 @@ workflows:
       - build-and-deploy:
           filters:
             branches:
-              only: master # set so only changes to master will be deployed
+              only: main # set so only changes to master will be deployed

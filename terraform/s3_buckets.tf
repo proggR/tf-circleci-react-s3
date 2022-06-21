@@ -2,7 +2,7 @@
 
 # AWS main domain bucket (file storage)
 resource "aws_s3_bucket" "website" {
-  bucket = var.website_bucket_name
+  bucket = var.application_subdomain
   acl = "public-read"
   force_destroy = true
 
@@ -26,7 +26,7 @@ resource "aws_s3_bucket" "website" {
         "AWS": "*"
       },
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${var.website_bucket_name}/*"
+      "Resource": "arn:aws:s3:::${var.application_subdomain}/*"
     }
   ]
 }
@@ -48,12 +48,12 @@ EOF
 
 # AWS S3 bucket for www-redirect
 resource "aws_s3_bucket" "website_redirect" {
-  bucket = "www.${var.website_bucket_name}"
+  bucket = "www.${var.application_subdomain}"
   acl = "public-read"
   force_destroy = true
 
   website {
-    redirect_all_requests_to = var.website_bucket_name
+    redirect_all_requests_to = var.application_subdomain
   }
 
     #     lifecycle {
@@ -63,5 +63,5 @@ resource "aws_s3_bucket" "website_redirect" {
     #         #
     #         prevent_destroy = true
     #     }
-    
+
 }

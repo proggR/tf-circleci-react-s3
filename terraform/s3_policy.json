@@ -9,7 +9,7 @@
                 "AWS": "*"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::${var.website_bucket_name}/*"
+            "Resource": "arn:aws:s3:::${var.application_subdomain}/*"
         }
     ]
 }
