@@ -11,12 +11,8 @@ provider "aws" {
   region  = var.website_aws_region
 }
 
-resource "aws_route53_zone" "domain" {
-  name  = "${var.root_domain_name}"
-}
-
 resource "aws_route53_record" "frontend_record" {
-  zone_id = aws_route53_zone.domain.zone_id
+  zone_id = data.aws_route53_zone.skunk_apex.zone_id
   name = "${var.application_subdomain}"
   type = "A"
   alias {

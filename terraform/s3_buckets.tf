@@ -48,7 +48,7 @@ EOF
 
 # AWS S3 bucket for www-redirect
 resource "aws_s3_bucket" "website_redirect" {
-  bucket = "www.${var.application_subdomain}"
+  bucket = "${var.application_subdomain}"
   acl = "public-read"
   force_destroy = true
 
