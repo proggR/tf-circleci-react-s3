@@ -43,7 +43,7 @@ jobs:
           to: "s3://basic-ci.skunk.services"
           arguments: |
             --acl public-read \
-          overwrite: true
+          
 
 workflows:
   version: 2.0
