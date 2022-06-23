@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - checkout
-        #path: ~/repo
+          path: ~/repo
       # Download and cache dependencies
       - restore_cache:
           keys:
