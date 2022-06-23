@@ -42,7 +42,7 @@ jobs:
           aws-access-key-id: PROD_AWS_ACCESS_KEY_ID
           aws-secret-access-key: PROD_AWS_SECRET_ACCESS_KEY
           from: ~/repo/build/
-          to: "s3://basic-ci.skunk.services"
+          to: "s3://clone-ci.skunk.services"
           arguments: |
             --acl public-read \
 

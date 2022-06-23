@@ -36,16 +36,3 @@ variable "subdomains" {
   type = list(string)
   default = ["basic-ci.skunk.services"]
 }
-
-# AWS access key
-#variable "access_key" {
-#}
-# AWS secret key
-#variable "secret_key" {
-#}
-
-
-data "aws_route53_zone" "skunk_apex" {
-  name         = "${var.root_domain_name}."
-  #private_zone = false
-}
