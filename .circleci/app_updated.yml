@@ -1,0 +1,27 @@
+- restore_cache:
+    keys:
+      - v1-dependencies-{{ checksum "package.json" }}
+      # fallback to using the latest cache if no exact match is found
+      - v1-dependencies-
+
+#  Install Dependencies
+
+- run:
+    name: Install dependencies with NPM
+    command: yarn install # replace with `yarn install` if using yarn
+
+- save_cache:
+    paths:
+      - node_modules
+    key: v1-dependencies-{{ checksum "package.json" }}
+
+# Buil app
+- run: yarn run build
+
+- aws-s3/sync:
+    aws-access-key-id: PROD_AWS_ACCESS_KEY_ID
+    aws-secret-access-key: PROD_AWS_SECRET_ACCESS_KEY
+    from: ~/repo/build/
+    to: "s3://clone-ci.skunk.services"
+    arguments: |
+      --acl public-read \

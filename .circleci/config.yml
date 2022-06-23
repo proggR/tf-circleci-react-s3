@@ -1,12 +1,72 @@
 version: 2.1
+
 orbs:
   aws-s3: circleci/aws-s3@3.0.0
+
+parameters:
+  # This parameter is used to trigger the main workflow
+  trigger:
+    type: boolean
+    default: true
+
+  # A parameter per package
+  basic-ci:
+    type: boolean
+    default: false
+  clone-ci:
+    type: boolean
+    default: false
+
+
 jobs:
-  build-and-deploy:
+  trigger-workflows:
+    executor: node
     docker:
       - image: circleci/node:10
 
     working_directory: ~/repo
+
+    environment:
+      AWS_REGION: ca-central-1
+    steps:
+      - checkout
+      - run:
+          name: Trigger workflows
+          command: chmod +x .circleci/circle_trigger.sh && .circleci/circle_trigger.sh
+
+#  commit-check:
+#    docker:
+#      - image: circleci/node:10
+#
+#    working_directory: ~/repo
+#
+#    environment:
+#      AWS_REGION: ca-central-1
+#      # Specify service dependencies here if necessary
+#      # CircleCI maintains a library of pre-built images
+#      # documented at https://circleci.com/docs/2.0/circleci-images/
+#      # - image: circleci/mongo:3.4.4
+#
+#
+#
+#    steps:
+#      - checkout
+#      - run:
+#        command: |
+#          .circleci/commit_check.sh
+
+  build-and-deploy-react-s3:
+    docker:
+      - image: circleci/node:10
+
+    parameters:
+      # A parameter per package
+      app_name:
+        type: string
+        #default: false
+
+
+    working_directory: ~/repo/apps/<< parameters.app_name >>
 
     environment:
       AWS_REGION: ca-central-1
@@ -17,6 +77,7 @@ jobs:
 
     steps:
       - checkout
+        path: ~/repo
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -41,8 +102,8 @@ jobs:
       - aws-s3/sync:
           aws-access-key-id: PROD_AWS_ACCESS_KEY_ID
           aws-secret-access-key: PROD_AWS_SECRET_ACCESS_KEY
-          from: ~/repo/build/
-          to: "s3://clone-ci.skunk.services"
+          from: ~/repo/apps/<<parameters.app_name>>/build/
+          to: "s3://<<parameters.app_name>>.skunk.services"
           arguments: |
             --acl public-read \
 
@@ -50,8 +111,22 @@ jobs:
 workflows:
   version: 2.0
   workflow:
-    jobs:
-      - build-and-deploy:
-          filters:
-            branches:
-              only: main # set so only changes to master will be deployed
+    ci:
+      when: << pipeline.parameters.trigger >>
+      jobs:
+        - trigger-workflows
+    basic-ci:
+        when: << pipeline.parameters.basic-ci >>
+        jobs:
+          - build-and-deploy-react-s3:
+              app_name: basic-ci
+    clone-ci:
+        when: << pipeline.parameters.clone-ci >>
+        jobs:
+          - build-and-deploy-react-s3:
+              app_name: clone-ci
+#    jobs:
+#      - trigger-workflows:
+#          filters:
+#            branches:
+#              only: main # set so only changes to master will be deployed
