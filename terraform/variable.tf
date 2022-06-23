@@ -12,6 +12,11 @@ variable "application_subdomain" {
   default = "basic-ci.skunk.services"
 }
 
+# apex to sub mapping
+variable "apex_subdomain" {
+  default = "basic-ci.skunk.services"
+}
+
 # exclaim webapp domain
 variable "exclaim_subdomain" {
   default = "exclaim-ci.skunk.services"
@@ -33,11 +38,11 @@ variable "subdomains" {
 }
 
 # AWS access key
-variable "access_key" {
-}
+#variable "access_key" {
+#}
 # AWS secret key
-variable "secret_key" {
-}
+#variable "secret_key" {
+#}
 
 
 data "aws_route53_zone" "skunk_apex" {

@@ -1,3 +1,16 @@
+resource "aws_acm_certificate" "cloudfront" {
+  domain_name               = "${var.root_domain_name}"
+  validation_method         = "DNS"
+  subject_alternative_names = var.subdomains
+
+  provider = aws.us_east
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
 resource "aws_acm_certificate" "skunk" {
   domain_name               = "${var.root_domain_name}"
   validation_method         = "DNS"
@@ -63,6 +76,12 @@ resource "aws_acm_certificate_validation" "skunk" {
   validation_record_fqdns = [for record in aws_route53_record.skunk : record.fqdn]
 }
 
+resource "aws_acm_certificate_validation" "cloudfront" {
+  provider = aws.us_east
+  certificate_arn         = aws_acm_certificate.cloudfront.arn
+  validation_record_fqdns = [for record in aws_route53_record.skunk : record.fqdn]
+}
+
 # resource "aws_lb_listener" "skunk" {
   # ... other configuration ...
 
@@ -76,10 +95,11 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
       http_port = "80"
       https_port = "443"
       origin_protocol_policy = "http-only"
-      origin_ssl_protocols = ["TLSv1","TLSv1.1","TLSv1.2"]
+      origin_ssl_protocols = ["TLSv1.2"]
     }
-    #domain_name = "${aws_s3_bucket.website.bucket}"
-    domain_name = "${var.application_subdomain}.s3.amazonaws.com"
+    #domain_name = "${aws_s3_bucket.website.bucket_regional_domain_name}"
+    #domain_name = "${var.application_subdomain}.s3.amazonaws.com"
+    domain_name = "${aws_s3_bucket.website.bucket}"
     origin_id = "${var.application_subdomain}"
   }
 
@@ -111,7 +131,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
    response_page_path = "/index.html"
   }
 
-  aliases = ["${var.root_domain_name}","${var.application_subdomain}"]
+  # aliases = ["${var.root_domain_name}","${var.application_subdomain}"]
 
   restrictions {
     geo_restriction {
@@ -120,7 +140,10 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate.skunk.arn
+    acm_certificate_arn = aws_acm_certificate.cloudfront.arn
+    minimum_protocol_version = "TLSv1.2_2018"
     ssl_support_method = "sni-only"
   }
+
+  depends_on = [aws_acm_certificate.cloudfront]
 }
