@@ -66,7 +66,7 @@ jobs:
         #default: false
 
 
-    working_directory: ~/repo/apps/<< parameters.app_name >>
+    #working_directory: ~/repo/apps/<< parameters.app_name >>
 
     environment:
       AWS_REGION: ca-central-1
@@ -77,11 +77,10 @@ jobs:
 
     steps:
       - checkout
-          path: ~/repo
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-{{ checksum "~/repo/apps/<<parameters.app_name>>/package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
@@ -89,15 +88,15 @@ jobs:
 
       - run:
           name: Install dependencies with NPM
-          command: yarn install # replace with `yarn install` if using yarn
+          command: cd ~/repo/apps/<<parameters.app_name>> && yarn install # replace with `yarn install` if using yarn
 
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - ~/repo/apps/<<parameters.app_name>>/node_modules
+          key: v1-dependencies-{{ checksum "~/repo/apps/<<parameters.app_name>>/package.json" }}
 
       # Buil app
-      - run: yarn run build
+      - run: cd ~/repo/apps/<<parameters.app_name>> && yarn run build
 
       - aws-s3/sync:
           aws-access-key-id: PROD_AWS_ACCESS_KEY_ID
