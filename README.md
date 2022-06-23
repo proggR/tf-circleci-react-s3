@@ -12,7 +12,7 @@ Once CircleCI config's conditional logic is updated with the folder/subdomain to
 - provision cloudfront distribution for each subdomain
 
 # @TODO:
-- add conditional logic to CircleCI pipeline and test a proper clone of the app and per-project changes/builds 
+- add conditional logic to CircleCI pipeline and test a proper clone of the app and per-project changes/builds
 - model simple state management schema and hack together a python script that takes in subdomain, type of deployement (for now S3/Cloudfront is all that's supported but more to come) and creates the necessary terraform/circleci config changes
 
 #  Notes
