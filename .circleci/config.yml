@@ -17,14 +17,15 @@ parameters:
     type: boolean
     default: false
 
+executors:
+  node:
+    docker:
+      - image: circleci/node:10
 
 jobs:
   trigger-workflows:
     #executor: node
-    docker:
-      - image: circleci/node:10
-
-    working_directory: ~/repo
+    executor: node
 
     environment:
       AWS_REGION: ca-central-1
@@ -56,8 +57,7 @@ jobs:
 #          .circleci/commit_check.sh
 
   build-and-deploy-react-s3:
-    docker:
-      - image: circleci/node:10
+    executor: node
 
     parameters:
       # A parameter per package
@@ -110,21 +110,25 @@ jobs:
 
 workflows:
   version: 2.0
-  workflow:
-    ci:
-      when: << pipeline.parameters.trigger >>
+
+  ci:
+    when: << pipeline.parameters.trigger >>
+    jobs:
+      - trigger-workflows
+
+  basic-ci:
+      when: << pipeline.parameters.basic-ci >>
       jobs:
-        - trigger-workflows
-    basic-ci:
-        when: << pipeline.parameters.basic-ci >>
-        jobs:
-          - build-and-deploy-react-s3:
-              app_name: basic-ci
-    clone-ci:
-        when: << pipeline.parameters.clone-ci >>
-        jobs:
-          - build-and-deploy-react-s3:
-              app_name: clone-ci
+        - build-and-deploy-react-s3:
+            name: basic-build-and-deploy
+            app_name: basic-ci
+
+  clone-ci:
+      when: << pipeline.parameters.clone-ci >>
+      jobs:
+        - build-and-deploy-react-s3:
+            name: clone-build-and-deploy
+            app_name: clone-ci
 #    jobs:
 #      - trigger-workflows:
 #          filters:
