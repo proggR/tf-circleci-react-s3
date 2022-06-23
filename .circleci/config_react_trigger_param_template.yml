@@ -1,0 +1,3 @@
+  #app_name:
+    type: boolean
+    default: false

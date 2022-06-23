@@ -3,7 +3,7 @@
 # AWS main domain bucket (file storage)
 resource "aws_s3_bucket" "website" {
   count = length(var.s3_subdomains)
-  bucket = var.s3_subdomains[count.index]
+  bucket = "${var.s3_subdomains[count.index]}.${var.apex_domain}"
   #bucket = var.application_subdomain
   force_destroy = true
 }
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "allow_access_from_another_account" {
       #aws_s3_bucket.website.arn,
       aws_s3_bucket.website[count.index].arn,
       #"arn:aws:s3:::${var.application_subdomain}/*",
-      "arn:aws:s3:::${var.s3_subdomains[count.index]}/*",
+      "arn:aws:s3:::${var.s3_subdomains[count.index]}.${var.apex_domain}/*",
     ]
   }
 }
@@ -77,8 +77,7 @@ resource "aws_s3_bucket_cors_configuration" "website" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "POST"]
-    allowed_origins = [var.s3_subdomains[count.index]]
-    #allowed_origins = ["https://basic-ci.skunk.services"]
+    allowed_origins = ["${var.s3_subdomains[count.index]}.${var.apex_domain}"]    
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }

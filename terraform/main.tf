@@ -6,16 +6,12 @@
 #
 
 provider "aws" {
-  #access_key = var.access_key
-  #secret_key  = var.secret_key
   shared_credentials_files = ["$HOME/.aws/credentials"]
   profile = "default"
-  region  = var.website_aws_region
+  region  = var.region
 }
 
 provider "aws" {
-  #access_key = var.access_key
-  #secret_key  = var.secret_key
   shared_credentials_files = ["$HOME/.aws/credentials"]
   profile = "default"
   alias  = "us_east"

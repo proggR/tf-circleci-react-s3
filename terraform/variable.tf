@@ -1,10 +1,10 @@
 # AWS region
-variable "website_aws_region" {
+variable "region" {
   default = "ca-central-1"
 }
 
 # root level domain
-variable "root_domain_name" {
+variable "apex_domain" {
   default = "skunk.services"
 }
 # apex to sub mapping
@@ -16,5 +16,5 @@ variable "apex_subdomain" {
 variable "s3_subdomains" {
   description = "List of deployed subdomains"
   type = list(string)
-  default = ["basic-ci.#{root_domain_name}"]
+  default = ["basic-ci.#{apex_domain}"]
 }

@@ -2,6 +2,8 @@
 **/.terraform/*
 .env
 
+.circleci/.config_vars.yml
+
 # .tfstate files
 *.tfstate
 *.tfstate.*

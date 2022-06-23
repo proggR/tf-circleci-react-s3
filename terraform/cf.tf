@@ -13,7 +13,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
     #domain_name = "${var.application_subdomain}.s3.amazonaws.com"
     #domain_name = "${aws_s3_bucket.website.bucket}"
     #origin_id = "${var.application_subdomain}"
-    origin_id = "${var.s3_subdomains[count.index]}"
+    origin_id = "${var.s3_subdomains[count.index]}.${var.apex_domain}"
   }
 
   enabled = true
@@ -24,7 +24,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
     compress = true
     allowed_methods = ["GET","HEAD"]
     cached_methods = ["GET","HEAD"]
-    target_origin_id = "${var.s3_subdomains[count.index]}"
+    target_origin_id = "${var.s3_subdomains[count.index]}.${var.apex_domain}"
     #target_origin_id = "${var.application_subdomain}"
     #target_origin_id = "${aws_s3_bucket.website.bucket_regional_domain_name}"
     min_ttl = 0
@@ -46,7 +46,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
    response_page_path = "/index.html"
   }
 
-  aliases = ["${var.s3_subdomains[count.index]}"]
+  aliases = ["${var.s3_subdomains[count.index]}.${var.apex_domain}"]
   #aliases = ["${var.application_subdomain}"]
 
   restrictions {

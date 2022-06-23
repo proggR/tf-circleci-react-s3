@@ -1,7 +1,7 @@
 resource "aws_acm_certificate" "cloudfront" {
-  domain_name               = "${var.root_domain_name}"
+  domain_name               = "${var.apex_domain}"
   validation_method         = "DNS"
-  subject_alternative_names = var.s3_subdomains
+  subject_alternative_names = formatlist("%s.${var.apex_domain}", var.s3_subdomains)
 
   provider = aws.us_east
 
@@ -11,9 +11,9 @@ resource "aws_acm_certificate" "cloudfront" {
 }
 
 resource "aws_acm_certificate" "domain" {
-  domain_name               = "${var.root_domain_name}"
+  domain_name               = "${var.apex_domain}"
   validation_method         = "DNS"
-  subject_alternative_names = var.s3_subdomains
+  subject_alternative_names = formatlist("%s.${var.apex_domain}", var.s3_subdomains)
 
   lifecycle {
     create_before_destroy = true

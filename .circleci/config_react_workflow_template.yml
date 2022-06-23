@@ -1,0 +1,6 @@
+  #app_name:
+      when: << pipeline.parameters.#app_name >>
+      jobs:
+        - build-and-deploy-react-s3:
+            name: #app_name-build-and-deploy
+            app_name: #app_name

@@ -1,5 +1,5 @@
 data "aws_route53_zone" "apex" {
-  name         = "${var.root_domain_name}."
+  name         = "${var.apex_domain}."
   #private_zone = false
 }
 
@@ -7,7 +7,7 @@ data "aws_route53_zone" "apex" {
 resource "aws_route53_record" "frontend_record" {
   count = length(var.s3_subdomains)
   zone_id = data.aws_route53_zone.apex.zone_id
-  name = "${var.s3_subdomains[count.index]}"
+  name = "${var.s3_subdomains[count.index]}.${var.apex_domain}"
   #name = "${var.application_subdomain}"
   type = "A"
   alias {
