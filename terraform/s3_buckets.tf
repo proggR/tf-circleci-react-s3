@@ -83,7 +83,7 @@ resource "aws_s3_bucket_cors_configuration" "website" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "POST"]
-    allowed_origins = ["https://basic-ci.skunk.services"]
+    allowed_origins = ["https://skunk.services","https://basic-ci.skunk.services"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }

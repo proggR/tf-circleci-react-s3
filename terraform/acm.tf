@@ -95,11 +95,12 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
       http_port = "80"
       https_port = "443"
       origin_protocol_policy = "http-only"
-      origin_ssl_protocols = ["TLSv1.2"]
+      #origin_protocol_policy = "match-viewer"
+      origin_ssl_protocols = ["SSLv3","TLSv1.2"]
     }
-    #domain_name = "${aws_s3_bucket.website.bucket_regional_domain_name}"
+    domain_name = "${aws_s3_bucket.website.bucket_regional_domain_name}"
     #domain_name = "${var.application_subdomain}.s3.amazonaws.com"
-    domain_name = "${aws_s3_bucket.website.bucket}"
+    #domain_name = "${aws_s3_bucket.website.bucket}"
     origin_id = "${var.application_subdomain}"
   }
 
@@ -112,6 +113,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
     allowed_methods = ["GET","HEAD"]
     cached_methods = ["GET","HEAD"]
     target_origin_id = "${var.application_subdomain}"
+    #target_origin_id = "${aws_s3_bucket.website.bucket_regional_domain_name}"
     min_ttl = 0
     default_ttl = 86400
     max_ttl = 31536000
@@ -131,7 +133,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
    response_page_path = "/index.html"
   }
 
-  # aliases = ["${var.root_domain_name}","${var.application_subdomain}"]
+  aliases = ["${var.root_domain_name}","${var.application_subdomain}"]
 
   restrictions {
     geo_restriction {
