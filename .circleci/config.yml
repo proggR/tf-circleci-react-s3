@@ -39,7 +39,7 @@ jobs:
 #    docker:
 #      - image: circleci/node:10
 #
-#    working_directory: ~/repo
+#    working_directory: ~/project
 #
 #    environment:
 #      AWS_REGION: ca-central-1
@@ -66,7 +66,7 @@ jobs:
         #default: false
 
 
-    #working_directory: ~/repo/apps/<< parameters.app_name >>
+    #working_directory: ~/project/apps/<< parameters.app_name >>
 
     environment:
       AWS_REGION: ca-central-1
@@ -80,7 +80,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "~/repo/apps/<<parameters.app_name>>/package.json" }}
+            - v1-dependencies-{{ checksum "~/project/apps/<<parameters.app_name>>/package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
@@ -88,20 +88,20 @@ jobs:
 
       - run:
           name: Install dependencies with NPM
-          command: cd ~/repo/apps/<<parameters.app_name>> && yarn install # replace with `yarn install` if using yarn
+          command: cd ~/project/apps/<<parameters.app_name>> && yarn install # replace with `yarn install` if using yarn
 
       - save_cache:
           paths:
-            - ~/repo/apps/<<parameters.app_name>>/node_modules
-          key: v1-dependencies-{{ checksum "~/repo/apps/<<parameters.app_name>>/package.json" }}
+            - ~/project/apps/<<parameters.app_name>>/node_modules
+          key: v1-dependencies-{{ checksum "~/project/apps/<<parameters.app_name>>/package.json" }}
 
       # Buil app
-      - run: cd ~/repo/apps/<<parameters.app_name>> && yarn run build
+      - run: cd ~/project/apps/<<parameters.app_name>> && yarn run build
 
       - aws-s3/sync:
           aws-access-key-id: PROD_AWS_ACCESS_KEY_ID
           aws-secret-access-key: PROD_AWS_SECRET_ACCESS_KEY
-          from: ~/repo/apps/<<parameters.app_name>>/build/
+          from: ~/project/apps/<<parameters.app_name>>/build/
           to: "s3://<<parameters.app_name>>.skunk.services"
           arguments: |
             --acl public-read \
