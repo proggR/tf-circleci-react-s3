@@ -22,6 +22,18 @@ s3_subdomains = ["sub1","sub2"]
 apex_subdomain = "sub1" #future feature to alias apex to app
 </pre>
 
+### CircleCI: ENV Vars
+
+<pre>
+CIRCLE_API
+CIRCLE_TOKEN
+REPOSITORY_TYPE
+CIRCLE_PROJECT_REPONAME
+CIRCLE_PROJECT_USERNAME
+PROD_AWS_ACCESS_KEY_ID
+PROD_AWS_SECRET_ACCESS_KEY
+</pre>
+
 ### CircleCI: .circlecli/.config_vars.yml (once ./circleci/config_gen.py written)
 
 The CircleCI config doesn't yet support proper variables, requiring some copy pasting per subdomain/app. Once the generator script is written the variables (definited in ./circleci/.config_vars.yml) will be:
