@@ -88,8 +88,8 @@ jobs:
 
       - run:
           name: Install dependencies with NPM
-          command: cd ~/project/apps/<<parameters.app_name>> && yarn install # replace with `yarn install` if using yarn
-
+          command: cd ~/project/apps/<<parameters.app_name>> && yarn install && npm audit fix --force
+          # replace with `yarn install` if using yarn
       - save_cache:
           paths:
             - ~/project/apps/<<parameters.app_name>>/node_modules
